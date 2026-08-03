@@ -40,4 +40,4 @@ if __name__ == "__main__":
     db.save_request("Казань", 19.0, 8.5)
     for row in db.get_history():
         print(row)
-    db.close()
+    db.close
