@@ -15,19 +15,22 @@ if __name__ == "__main__":
         option = input("1. Узнать погоду\n2. История запросов\n3. Выход\n")
         if option == "1":
             city = input("Введите город: ")
-            if not city in CITIES.keys():
-                print(f"Доступны: {list(CITIES.keys())}")
+            if city not in CITIES:
+                print(f"Доступны: {', '.join(CITIES)}")
                 continue
             result = ws.get_weather(*CITIES.get(city))
             if result is None:
                 continue
             print(f"В {city} {result["temperature"]}°C, ветер {result["windspeed"]} км/ч")
             db.save_request(city, result["temperature"], result["windspeed"])
-            continue
         elif option == "2":
-            print(f"{'ID':<3} | {'Город':<10} | {'Температура':<4} | {'Ветер':<4} | {'Дата':<10}")
-            for row in db.get_history():
-                print(f"{row[0]:<3} | {row[1]:<10} | {row[2]:<4} | {row[3]:<4} | {row[4]:<10}")
+            history = db.get_history()
+            if not history:
+                print("История пуста")
+            else:
+                print(f"{'ID':<3} | {'Город':<10} | {'Температура':<12} | {'Ветер':<5} | {'Дата':<10}")
+                for row in history:
+                    print(f"{row[0]:<3} | {row[1]:<10} | {row[2]:<12} | {row[3]:<5} | {row[4]:<10}")
         elif option == "3":
             db.close()
             print("До свидания")
